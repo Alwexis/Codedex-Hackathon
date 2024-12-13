@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 import Tooltip from "../components/Tooltip";
 
 function Register() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
+    const [formDisabled, setFormDisabled] = useState(true);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -12,9 +18,30 @@ function Register() {
         validateField(e.target, name, value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
+        try {
+            const _ = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            const _r = await fetch("http://127.0.0.1:8000/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                        uid: _.user.uid,
+                        username: formData.username,
+                        email: formData.email,
+                        secret: formData.secret || "",
+                }),
+            })
+            const r = await _r.json();
+            if (r.status == "success") {
+                navigate("/");
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const validateField = (el, name, value) => {
@@ -37,6 +64,14 @@ function Register() {
 
         setErrors({ ...errors, [name]: error });
     };
+
+    useEffect(() => {
+        if (Object.values(errors).every((err) => err === "")) {
+            setFormDisabled(false);
+        } else {
+            setFormDisabled(true);
+        }
+    }, [formData]);
 
     return (
         <main className="flex items-center justify-center h-screen w-full bg-gray-100 py-2 px-6">
@@ -124,7 +159,7 @@ function Register() {
                         />
                     </div>
                     <button
-                        disabled={Object.values(errors).some((err) => err)}
+                        disabled={formDisabled}
                         type="submit"
                         className="cursor-pointer disabled:cursor-not-allowed w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 border-b-2 border-green-700 hover:border-green-800 active:border-t-2 active:border-b-0 transition-all duration-100 mt-2"
                     >

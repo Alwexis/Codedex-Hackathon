@@ -1,5 +1,6 @@
 pymongo
 bcrypt
-"fastapi[standard]"
 python-socketio
 fastapi
+python-dotenv
+firebase-admin
