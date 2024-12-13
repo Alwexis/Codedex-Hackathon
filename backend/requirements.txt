@@ -1,0 +1,5 @@
+pymongo
+bcrypt
+"fastapi[standard]"
+python-socketio
+fastapi
