@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { getAuth, updatePassword } from "firebase/auth";
 
 export default function EditProfileModal({ isOpen, onClose }) {
     const { user, firebaseUser, refreshUser } = useAuth();
-    const [formData, setFormData] = useState({ username: user.username, public_profile: user.public_profile, profile_picture: user.profile_picture });
+    const [formData, setFormData] = useState({ username: user.username, profile_picture: user.profile_picture });
+    const [password, setPassword] = useState(""); // Nuevo estado para la contraseña
     const [isEditing, setIsEditing] = useState(false);
     const [pfp, setPfp] = useState(user.profile_picture);
     const [errors, setErrors] = useState({});
+    const [publicProfile, setPublicProfile] = useState(user.public_profile);
     const [formDisabled, setFormDisabled] = useState(true);
 
     const validateField = (el, name, value) => {
@@ -42,6 +45,14 @@ export default function EditProfileModal({ isOpen, onClose }) {
         validateField(e.target, name, value);
     };
 
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const handleProfileVisibility = () => {
+        setPublicProfile(!publicProfile);
+    };
+
     const handleFilesChange = (e) => {
         const { name } = e.target;
         const file = e.target.files[0];
@@ -65,12 +76,17 @@ export default function EditProfileModal({ isOpen, onClose }) {
         e.preventDefault();
         if (isEditing) return;
         setIsEditing(true);
+
         const form = new FormData();
-        form.append("username", formData.username);
-        form.append("public_profile", formData.public_profile);
+        if (formData.username) {
+            form.append("username", formData.username);
+        }
+        form.append("public_profile", publicProfile);
+
         if (formData.profile_picture != "/no_pfp.webp" && formData.profile_picture != user.profile_picture) {
             form.append("file", formData.profile_picture);
         }
+
         try {
             const response = await fetch("https://codedex-hackathon.onrender.com/auth/user/", {
                 method: "PATCH",
@@ -79,21 +95,27 @@ export default function EditProfileModal({ isOpen, onClose }) {
                 },
                 body: form,
             });
+
             const data = await response.json();
-            console.log(data);
-            setIsEditing(false);
-            if (data.status == "success") {
+            if (data.status === "success") {
+                // Si la contraseña no está vacía, actualizarla en Firebase
+                if (password) {
+                    const auth = getAuth();
+                    const userFirebase = auth.currentUser;
+                    await updatePassword(userFirebase, password);
+                }
+
+                setIsEditing(false);
                 onClose("success", "");
                 refreshUser();
             } else {
+                setIsEditing(false);
                 onClose("error", data.message);
             }
         } catch (error) {
             setIsEditing(false);
-            console.error("Error creating post:", error);
+            console.error("Error updating profile:", error);
         }
-
-        onClose();
     };
 
     if (!isOpen) return null;
@@ -132,10 +154,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
                         </div>
                     </div>
                     <div>
-                        <label
-                            htmlFor="username"
-                            className="block font-bold mb-1"
-                        >
+                        <label htmlFor="username" className="block font-bold mb-1">
                             Username:
                         </label>
                         <input
@@ -143,55 +162,41 @@ export default function EditProfileModal({ isOpen, onClose }) {
                             id="username"
                             name="username"
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border-2 border-black bg-gray-100 data-[invalid=true]:border-red-400 data-[invalid=true]:text-red-400 transition-all outline-none"
+                            className="w-full px-3 py-2 border-2 border-black bg-gray-100"
                         />
-                        {
-                            errors.username && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.username}
-                                </p>
-                            )
-                        }
                     </div>
                     <div>
-                        <label
-                            htmlFor="password"
-                            className="block font-bold mb-1"
-                        >
+                        <label htmlFor="password" className="block font-bold mb-1">
                             New Password:
                         </label>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 border-2 border-black bg-gray-100 data-[invalid=true]:border-red-400 data-[invalid=true]:text-red-400 transition-all outline-none"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            disabled
+                            placeholder="Very soon!"
+                            className="w-full px-3 py-2 border-2 border-black bg-gray-100 cursor-not-allowed"
                         />
-                        {
-                            errors.password && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.password}
-                                </p>
-                            )
-                        }
+                        {errors.password && (
+                            <p className="text-red-400 text-sm mt-1">
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
                     <div className="flex items-center justify-between">
                         <span className="font-bold">Profile Visibility:</span>
                         <button
                             type="button"
-                            onClick={() =>
-                                setFormData({
-                                    ...formData,
-                                    public_profile: !formData.public_profile,
-                                })
-                            }
+                            onClick={handleProfileVisibility}
                             className={`px-4 py-2 font-bold border-2 border-black transition-colors ${
-                                formData.public_profile
-                                    ? "cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white border-b-2 border-yellow-700 hover:border-yellow-800"
-                                    : "cursor-pointer bg-green-500 hover:bg-green-600 text-white border-b-2 border-green-700 hover:border-green-800"
+                                publicProfile
+                                    ? "cursor-pointer bg-green-500 hover:bg-green-600 text-white border-b-2 border-green-700 hover:border-green-800"
+                                    : "cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white border-b-2 border-yellow-700 hover:border-yellow-800"
                             }`}
                         >
-                            {formData.public_profile ? "Private" : "Public"}
+                            {publicProfile ? "Public" : "Private"}
                         </button>
                     </div>
                     <div className="flex justify-end space-x-2">
