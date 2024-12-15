@@ -145,7 +145,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 font-mono text-black">
       <header className="bg-blue-500 text-white p-4 text-center">
-        <h1 className="text-4xl font-bold animate-pulse">WeaveBond</h1>
+        <h1 className="text-4xl font-bold animate-pulse">WeaveNet</h1>
       </header>
 
       <div className="container mx-auto p-4 flex flex-col md:flex-row gap-8">
