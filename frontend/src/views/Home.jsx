@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext'
 import Loading from '../components/Loading'
-import MyPosts from '../components/MyPosts';
-import Posts from '../components/Posts';
-import CreatePostModal from '../components/CreatePostModal';
-import EditProfileModal from '../components/EditProfileModal';
+import MyPosts from '../components/posts/MyPosts';
+import Posts from '../components/posts/Posts';
+import CreatePostModal from '../components/modals/CreatePostModal';
+import EditProfileModal from '../components/modals/EditProfileModal';
 import ChatInterface from '../components/Chat';
 
 export default function Home() {

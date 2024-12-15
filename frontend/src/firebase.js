@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
+//! Esta configuración está publica ya que el proyecto de Firebase es desechable y no contiene información sensible.
+//! Además, se cambiará una vez la versión final de la aplicación esté lista.
 const firebaseConfig = {
   apiKey: "AIzaSyByRec1mVaDvAXEQzgl8uosA_RzPnATmc4",
   authDomain: "wavenet-73cf7.firebaseapp.com",

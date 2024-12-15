@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import "tailwindcss";
 
+/*
+! Defino customización para TailwindCSS, ya que en la versión 4.0 se dejó en des-uso el archivo configurable y
+! se debe hacer mediante el archivo de configuración de CSS en donde se importó TailwindCSS.
+*/
 @theme {
     --font-vt323: 'VT323', monospace;
 }
