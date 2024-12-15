@@ -89,34 +89,41 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Establece el listener para el cambio de estado de autenticación
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setLoading(true); // Comienza la carga cuando se detecta un cambio de estado de autenticación
+    
             if (!user) {
                 setUser(null);
                 setFirebaseUser(null);
-                setLoading(false); // Dejar de cargar si no hay usuario
+                setLoading(false); // Detener la carga si no hay usuario
                 navigate("/login");
                 return;
             }
+    
             try {
-                const _ = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
+                const response = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${user.accessToken}`,
                     }
                 });
-                const r = await _.json();
+                const r = await response.json();
                 if (r.user) {
                     setUser(r.user);
                     setFirebaseUser(user);
                     getUserLikes(user.accessToken);
                     getChats(user.accessToken);
-                    setLoading(false);
+                } else {
+                    setUser(null); // Si no se obtiene un usuario válido
                 }
             } catch (error) {
+                console.error(error);
                 navigate("/login");
+            } finally {
+                setLoading(false); // Detener la carga después de obtener los datos
             }
         });
-
+    
         // Limpieza del listener
         return () => unsubscribe();
     }, []);
