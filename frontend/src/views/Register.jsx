@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
-import Tooltip from "../components/Tooltip";
-
 function Register() {
     const navigate = useNavigate();
 

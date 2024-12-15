@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from "../firebase";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';  // Asegúrate de importar useLocation
 
 // Crear un contexto
 const AuthContext = createContext();
@@ -9,6 +9,7 @@ const AuthContext = createContext();
 // Proveedor de contexto para envolver la aplicación
 export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
+    const location = useLocation();  // Usamos useLocation para obtener la ubicación actual
     const [user, setUser] = useState(null);
     const [firebaseUser, setFirebaseUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,61 +18,42 @@ export const AuthProvider = ({ children }) => {
 
     const getChats = async (accessToken) => {
         if (!accessToken) return;
-        const _ = await fetch("https://codedex-hackathon.onrender.com/chats", {
+        const response = await fetch("https://codedex-hackathon.onrender.com/chats", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${accessToken}`,
             }
         });
-        const r = await _.json();
-        if (r.status == "success") {
+        const r = await response.json();
+        if (r.status === "success") {
             setChats(JSON.parse(r.result));
         } else {
             setChats([]);
         }
     };
 
-    const refreshChats = async () => {
-        await getChats(firebaseUser.accessToken);
-    }
-
     const getUserLikes = async (accessToken) => {
-        const _ = await fetch("https://codedex-hackathon.onrender.com/likes/user", {
+        const response = await fetch("https://codedex-hackathon.onrender.com/likes/user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${accessToken}`,
             }
         });
-        const r = await _.json();
+        const r = await response.json();
         setUserLikes(r.likes);
-    }
-
-    /*
-    const getFriends = async (accessToken) => {
-        const _ = await fetch("https://codedex-hackathon.onrender.com/friends", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-            }
-        });
-        const r = await _.json();
-        setFriends(JSON.parse(r.friends));
-        setLastMessages(JSON.parse(r.last_messages));
-    }
-    */
+    };
 
     const refreshUser = async () => {
-        const _ = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
+        const response = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${firebaseUser.accessToken}`,
             }
         });
-        const r = await _.json();
+        const r = await response.json();
         if (r.user) {
             getUserLikes(firebaseUser.accessToken);
             getChats(firebaseUser.accessToken);
@@ -87,49 +69,54 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        // Establece el listener para el cambio de estado de autenticación
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setLoading(true); // Comienza la carga cuando se detecta un cambio de estado de autenticación
-    
-            if (!user) {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            setLoading(true);
+
+            if (!firebaseUser) {
                 setUser(null);
                 setFirebaseUser(null);
-                setLoading(false); // Detener la carga si no hay usuario
-                navigate("/login");
+                setLoading(false);
+                // Redirige a login si no hay usuario
+                if (location.pathname !== '/login' && location.pathname !== '/register') {
+                    navigate('/login');
+                }
                 return;
             }
-    
+
+            // Si ya hay un usuario autenticado y está intentando acceder a login o register, lo redirigimos
+            if (firebaseUser && (location.pathname === "/login" || location.pathname === "/register")) {
+                navigate("/home"); // Redirige al home si ya está autenticado
+                return;
+            }
+
             try {
                 const response = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${user.accessToken}`,
+                        Authorization: `Bearer ${firebaseUser.accessToken}`,
                     }
                 });
                 const r = await response.json();
                 if (r.user) {
                     setUser(r.user);
-                    setFirebaseUser(user);
-                    getUserLikes(user.accessToken);
-                    getChats(user.accessToken);
-                } else {
-                    setUser(null); // Si no se obtiene un usuario válido
+                    setFirebaseUser(firebaseUser);
+                    getUserLikes(firebaseUser.accessToken);
+                    getChats(firebaseUser.accessToken);
                 }
             } catch (error) {
                 console.error(error);
                 navigate("/login");
             } finally {
-                setLoading(false); // Detener la carga después de obtener los datos
+                setLoading(false);
             }
         });
-    
-        // Limpieza del listener
+
         return () => unsubscribe();
-    }, []);
+    }, [location.pathname, navigate]);
 
     return (
-        <AuthContext.Provider value={{ user, firebaseUser, userLikes, chats, loading, logout, refreshUser, refreshChats }}>
+        <AuthContext.Provider value={{ user, firebaseUser, userLikes, chats, loading, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

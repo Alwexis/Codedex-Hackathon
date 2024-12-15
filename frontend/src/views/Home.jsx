@@ -140,7 +140,7 @@ export default function Home() {
     setActiveChat(chat)
   }
 
-  if (loading) return <Loading />
+  if (loading || !user) return <Loading />
 
   return (
     <div className="min-h-screen bg-gray-100 font-mono text-black">
