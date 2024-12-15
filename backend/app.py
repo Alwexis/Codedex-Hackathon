@@ -84,7 +84,7 @@ async def user(response: Response, username: str = Form(...), public_profile: bo
     if usernameExists and usernameExists.uid != userToUpdate.uid:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return { "status": "error", "message": "Username already exists." }
-    newPfp = "/no_pfp.webp"
+    newPfp = userToUpdate.profile_picture if not file else "/no_pfp.webp"
     if file:
         file_content = await file.read()
         url = upload_image(file_content)

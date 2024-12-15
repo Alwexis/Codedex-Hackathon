@@ -68,7 +68,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
         const form = new FormData();
         form.append("username", formData.username);
         form.append("public_profile", formData.public_profile);
-        if (formData.profile_picture != "/no_pfp.webp") {
+        if (formData.profile_picture != "/no_pfp.webp" && formData.profile_picture != user.profile_picture) {
             form.append("file", formData.profile_picture);
         }
         try {
