@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 function Login() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
     const [formDisabled, setFormDisabled] = useState(true);
@@ -11,9 +15,10 @@ function Login() {
         validateField(e.target, name, value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        await signInWithEmailAndPassword(auth, formData.email, formData.password)
+        navigate("/");
     };
 
     const validateField = (el, name, value) => {
@@ -38,10 +43,7 @@ function Login() {
     };
 
     useEffect(() => {
-        if (
-            Object.keys(formData).length === 4 &&
-            Object.values(errors).every((err) => err === "")
-        ) {
+        if (Object.values(errors).every((err) => err === "")) {
             setFormDisabled(false);
         } else {
             setFormDisabled(true);
@@ -56,16 +58,16 @@ function Login() {
                     {/* Username */}
                     <div>
                         <label
-                            htmlFor="username"
+                            htmlFor="email"
                             className="block font-bold mb-1"
                         >
                             <span className="text-red-600 mr-1">*</span>
-                            Username:
+                            Email:
                         </label>
                         <input
                             onChange={handleChange}
-                            id="username"
-                            name="username"
+                            id="email"
+                            name="email"
                             className="w-full px-3 py-2 outline-none border-2 data-[invalid=true]:border-red-400 data-[invalid=true]:text-red-400 border-black transition-all bg-gray-100"
                             required
                             type="text"

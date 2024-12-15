@@ -23,7 +23,7 @@ function Register() {
         console.log(formData);
         try {
             const _ = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-            const _r = await fetch("http://127.0.0.1:8000/auth/register", {
+            const _r = await fetch("https://codedex-hackathon.onrender.com/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -140,23 +140,6 @@ function Register() {
                                 type="password"
                             />
                         </div>
-                    </div>
-                    <div>
-                        <label htmlFor="secret" className="flex w-full items-center justify-between font-bold mb-1">
-                            <span>Secret:</span>
-                            <Tooltip direction="bottom"
-                                message={`Your "Secret" is something you can write down and let every single friend of yours know.`}>
-                                <svg className="w-4 h-4 cursor-pointer text-neutral-800" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10m0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16m1-9.5V15h1v2h-4v-2h1v-2.5h-1v-2zm.5-2.5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0"/></svg>
-                            </Tooltip>
-                        </label>
-                        <input
-                            onChange={handleChange}
-                            id="secret"
-                            name="secret"
-                            className="w-full px-3 py-2 border-2 outline-none data-[invalid=true]:border-red-400 data-[invalid=true]:text-red-400 border-black transition-all bg-gray-100"
-                            required=""
-                            type="text"
-                        />
                     </div>
                     <button
                         disabled={formDisabled}

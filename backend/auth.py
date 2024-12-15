@@ -3,16 +3,15 @@ from models import User
 
 def get_user_by_uid(uid):
     user = db.users.find_one({ 'uid': uid }, { '_id': 0 })
-    print(user)
-    return user
+    return User(**user) if user else None
 
 def get_user_by_username(username):
     user = db.users.find_one({ 'username': username })
-    return user
+    return User(**user) if user else None
 
 def get_user_by_email(email):
     user = db.users.find_one({ 'email': email })
-    return user
+    return User(**user) if user else None
 
 def check_if_user_exists(uid, email, username):
     user = db.users.find_one({
@@ -22,7 +21,7 @@ def check_if_user_exists(uid, email, username):
             { 'username': username }
         ]
     })
-    return user is not None
+    return User(**user) if user else None
 
 def register_user_if_not_exist(user):
     if not check_if_user_exists(user.uid, user.email, user.username):
@@ -31,7 +30,6 @@ def register_user_if_not_exist(user):
             uid=user.uid,
             username=user.username,
             email=user.email,
-            secret=user.secret,
             friends=[],
             profile_picture="no_pfp.webp"
         )
