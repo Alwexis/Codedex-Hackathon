@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
     const getChats = async (accessToken) => {
         if (!accessToken) return;
-        const _ = await fetch("http://localhost:8000/chats", {
+        const _ = await fetch("https://codedex-hackathon.onrender.com/chats", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const getUserLikes = async (accessToken) => {
-        const _ = await fetch("http://localhost:8000/likes/user", {
+        const _ = await fetch("https://codedex-hackathon.onrender.com/likes/user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
     /*
     const getFriends = async (accessToken) => {
-        const _ = await fetch("http://localhost:8000/friends", {
+        const _ = await fetch("https://codedex-hackathon.onrender.com/friends", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     */
 
     const refreshUser = async () => {
-        const _ = await fetch("http://localhost:8000/auth/user", {
+        const _ = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
                 return;
             }
             try {
-                const _ = await fetch("http://localhost:8000/auth/user", {
+                const _ = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

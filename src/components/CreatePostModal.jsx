@@ -79,7 +79,7 @@ export default function CreatePostModal({ isOpen, onClose }) {
             }
         }
         try {
-            const response = await fetch("http://localhost:8000/create-post/", {
+            const response = await fetch("https://codedex-hackathon.onrender.com/create-post/", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${firebaseUser.accessToken}`,

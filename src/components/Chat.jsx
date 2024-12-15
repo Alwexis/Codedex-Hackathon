@@ -38,7 +38,7 @@ export default function ChatInterface({ chat, onBack }) {
         const fetchMessages = async () => {
             setLoadingMessages(true);
             const _ = await fetch(
-                `http://localhost:8000/messages/${chat.id}`,
+                `https://codedex-hackathon.onrender.com/messages/${chat.id}`,
                 {
                     method: "GET",
                     headers: {

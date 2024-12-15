@@ -72,7 +72,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
             form.append("file", formData.profile_picture);
         }
         try {
-            const response = await fetch("http://localhost:8000/auth/user/", {
+            const response = await fetch("https://codedex-hackathon.onrender.com/auth/user/", {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${firebaseUser.accessToken}`,

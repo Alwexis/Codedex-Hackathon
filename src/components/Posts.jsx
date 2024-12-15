@@ -11,7 +11,7 @@ export default function Posts({ refresh, onRefreshComplete }) {
     const getPosts = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8000/posts/?user=public-friends`,
+            const response = await fetch(`https://codedex-hackathon.onrender.com/posts/?user=public-friends`,
                 {
                     method: "GET",
                     headers: {
@@ -35,7 +35,7 @@ export default function Posts({ refresh, onRefreshComplete }) {
     }, [, refresh]);
 
     const handlePostLike = async (postId) => {
-        const response = await fetch(`http://localhost:8000/like/`, {
+        const response = await fetch(`https://codedex-hackathon.onrender.com/like/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

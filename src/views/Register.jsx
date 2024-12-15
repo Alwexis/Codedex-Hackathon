@@ -23,7 +23,7 @@ function Register() {
         console.log(formData);
         try {
             const _ = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-            const _r = await fetch("http://127.0.0.1:8000/auth/register", {
+            const _r = await fetch("https://codedex-hackathon.onrender.com/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
