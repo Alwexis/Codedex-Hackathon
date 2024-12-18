@@ -5,13 +5,13 @@ import { getAuth } from "firebase/auth";
 //! Esta configuración está publica ya que el proyecto de Firebase es desechable y no contiene información sensible.
 //! Además, se cambiará una vez la versión final de la aplicación esté lista.
 const firebaseConfig = {
-  apiKey: "AIzaSyByRec1mVaDvAXEQzgl8uosA_RzPnATmc4",
-  authDomain: "wavenet-73cf7.firebaseapp.com",
-  projectId: "wavenet-73cf7",
-  storageBucket: "wavenet-73cf7.firebasestorage.app",
-  messagingSenderId: "1011540918028",
-  appId: "1:1011540918028:web:07fbcf0b772c9cced49329",
-  measurementId: "G-RCVEKXC8J1"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

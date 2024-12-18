@@ -5,10 +5,11 @@ from db import db
 import os
 from auth import get_user_by_email
 import requests
+from env_handler import env
 
-SECRET_KEY = "moniegamerpro"
-IMGDB_KEY = "74117d162959f42cdbdb185cd2457f03"
-IMGDB_URL = "https://api.imgbb.com/1/upload"
+SECRET_KEY = env.CYPH_SECRET_KEY
+IMGDB_KEY = env.IMGDB_KEY
+IMGDB_URL = env.IMGDB_URL
 
 def upload_image(image: bytes):
     #* Creamos el body de la petición con los Bytes de la Imagen

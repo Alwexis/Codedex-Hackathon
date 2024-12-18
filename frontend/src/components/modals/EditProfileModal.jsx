@@ -88,7 +88,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
         }
 
         try {
-            const response = await fetch("https://codedex-hackathon.onrender.com/auth/user/", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user/`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${firebaseUser.accessToken}`,

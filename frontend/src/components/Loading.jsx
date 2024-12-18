@@ -22,6 +22,7 @@ export default function Loading() {
             <h1 className="font-vt323 font-bold text-5xl tracking-widest">WaveNet</h1>
             <h3 className="font-mono text-lg my-2 animate-pulse tracking-wider">Loading</h3>
             <p>{message}</p>
+            <p className="absolute bottom-4 text-sm text-gray-600">Sometimes, it may be slow because <a href="https://render.com/" target="_blank">render.com</a> delays petitions and data deliviring for about 50 seconds when the service is in idle state.</p>
         </main>
     )
 }

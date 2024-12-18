@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
     const getChats = async (accessToken) => {
         if (!accessToken) return;
-        const response = await fetch("https://codedex-hackathon.onrender.com/chats", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/chats`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getUserLikes = async (accessToken) => {
-        const response = await fetch("https://codedex-hackathon.onrender.com/likes/user", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/likes/user`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const refreshUser = async () => {
-        const response = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -85,12 +85,11 @@ export const AuthProvider = ({ children }) => {
 
             // Si ya hay un usuario autenticado y está intentando acceder a login o register, lo redirigimos
             if (firebaseUser && (location.pathname === "/login" || location.pathname === "/register")) {
-                navigate("/home"); // Redirige al home si ya está autenticado
+                navigate("/"); // Redirige al home si ya está autenticado
                 return;
             }
-
             try {
-                const response = await fetch("https://codedex-hackathon.onrender.com/auth/user", {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -98,6 +97,7 @@ export const AuthProvider = ({ children }) => {
                     }
                 });
                 const r = await response.json();
+                console.log(r)
                 if (r.user) {
                     setUser(r.user);
                     setFirebaseUser(firebaseUser);

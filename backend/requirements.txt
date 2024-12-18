@@ -6,3 +6,4 @@ firebase-admin
 cryptography
 uvicorn
 python-multipart
+python-dotenv

@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from env_handler import env
 
-client = MongoClient("mongodb+srv://WaveNet:WaveNetAdmin@cluster0.pk2h25a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-db = client["WaveNet"]
+client = MongoClient(env.DB_URL)
+db = client[env.DB_NAME]

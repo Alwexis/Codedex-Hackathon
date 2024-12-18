@@ -261,8 +261,6 @@ async def wavebond(response: Response, uid: str = Depends(get_current_user)):
         filename=f"{user.username}.wavebond",
         media_type="application/octet-stream"
     )
-    
-    return response
 
 @app.post("/wavebond/", status_code=201)
 async def insert_wavebond(response: Response, file: UploadFile, uid: str = Depends(get_current_user)):
